@@ -1,17 +1,28 @@
 require 'simple_xlsx_reader'
+require 'json'
 
-doc = SimpleXlsxReader.open("/Users/joonkim/Desktop/sample_hd_template.xlsx")
+doc = SimpleXlsxReader.open(ARGV[0])
 student = {}
 student[:studentId] = doc.sheets[0].rows[3][2]
 student[:name] = doc.sheets[0].rows[4][2]
+student[:maxMemory] = 0
 
+# 시트명이 맞는 지 체크
+def isValidSheet(sheets, num)
+  sheets.each do |e|
+    if e.name == "Sheet 1 - Memory #{num}"
+      return e
+    end
+  end
+  return nil
+end
 
-# DH와 확률을 배열로 조합
+# HD, 확률을 배열로 조합
 def makeProb(row, index)
   myArray = []
   return nil if row[index].nil?
   myArray.push(row[index].downcase, row[index+1].to_f)
-  if myArray[0] == 'd' or 'h'
+  if ['d','h'].include?(myArray[0])
     if myArray[1] < 0
       myArray[1] = 0
     elsif myArray[1] > 1
@@ -24,23 +35,16 @@ def makeProb(row, index)
   return myArray
 end
 
-# memory0
+# memory0 읽음
 sheet = doc.sheets[1]
 student[:init] = makeProb(sheet.rows[2], 1)
 
-# memory1
-sheet = doc.sheets[2]
-sheet.rows[2..5].each do |row|
-  key = row[0..1].join.downcase
-  value = makeProb(row, 2)
-  student[:"#{key}"] = value
-end
-
-# memory2
-def makeStrategy(sheet, rowRange, dhLength, student)
+# memory1~4 읽기 위함
+def makeStrategy(sheet, memoryNum, rowRange, dhLength, student)
+  # 한 시트 내 전략이 몇개인지 셈
   count = 0
-  sheet.rows[2..17].each do |e|
-    if (not e[4].nil?) and e[4].downcase == 'd' or 'h'
+  sheet.rows[rowRange].each do |e|
+    if (not e[dhLength].nil?) and ['d','h'].include?(e[dhLength].downcase)
       count += 1
     end
   end
@@ -48,6 +52,7 @@ def makeStrategy(sheet, rowRange, dhLength, student)
     return nil
   end
 
+  # 전략 만듬
   key = ""
   sheet.rows[rowRange].each do |row|
     if row[0].nil?
@@ -58,11 +63,24 @@ def makeStrategy(sheet, rowRange, dhLength, student)
     value = makeProb(row, dhLength)
     student[:"#{key}"] = value
   end
+
+  student[:maxMemory] = [student[:maxMemory], memoryNum].max
   return nil
 end
 
-makeStrategy(doc.sheets[3], 2..17, 4, student)
-# makeStrategy(doc.sheets[4], 2..65, 6, student)
-# makeStrategy(doc.sheets[5], 2..257, 8, student)
-print student
-puts
+# memory1~4 읽음
+(1..4).each do |i|
+  sheet = isValidSheet(doc.sheets, i)
+  if sheet
+    puts "sheet #{i}: match!"
+    makeStrategy(sheet, i, 2..(2**(i*2)+1), i*2, student)
+    # makeStrategy(doc.sheets[2], 2..5, 2, student)
+    # makeStrategy(doc.sheets[3], 2..17, 4, student)
+    # makeStrategy(doc.sheets[4], 2..65, 6, student)
+    # makeStrategy(doc.sheets[5], 2..257, 8, student)
+  else
+    puts "sheet #{i}: invalid sheet name"
+  end
+end
+
+puts student.to_json
