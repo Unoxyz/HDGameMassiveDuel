@@ -1,11 +1,9 @@
 require 'simple_xlsx_reader'
 require 'json'
 
-doc = SimpleXlsxReader.open(ARGV[0])
-student = {}
-student[:studentId] = doc.sheets[0].rows[3][2]
-student[:name] = doc.sheets[0].rows[4][2]
-student[:maxMemory] = 0
+filePath = "#{ARGV[0]}*.xlsx"
+xlsxFiles = Dir.glob(filePath)
+allStudents = []
 
 # 시트명이 맞는 지 체크
 def isValidSheet(sheets, num)
@@ -34,10 +32,6 @@ def makeProb(row, index)
   end
   return myArray
 end
-
-# memory0 읽음
-sheet = doc.sheets[1]
-student[:init] = makeProb(sheet.rows[2], 1)
 
 # memory1~4 읽기 위함
 def makeStrategy(sheet, memoryNum, rowRange, dhLength, student)
@@ -68,19 +62,39 @@ def makeStrategy(sheet, memoryNum, rowRange, dhLength, student)
   return nil
 end
 
-# memory1~4 읽음
-(1..4).each do |i|
-  sheet = isValidSheet(doc.sheets, i)
-  if sheet
-    puts "sheet #{i}: match!"
-    makeStrategy(sheet, i, 2..(2**(i*2)+1), i*2, student)
-    # makeStrategy(doc.sheets[2], 2..5, 2, student)
-    # makeStrategy(doc.sheets[3], 2..17, 4, student)
-    # makeStrategy(doc.sheets[4], 2..65, 6, student)
-    # makeStrategy(doc.sheets[5], 2..257, 8, student)
-  else
-    puts "sheet #{i}: invalid sheet name"
+xlsxFiles.each do |file|
+  doc = SimpleXlsxReader.open(file)
+  student = {}
+  student[:fileName] = File.basename(file)
+  student[:studentId] = doc.sheets[0].rows[3][2]
+  student[:name] = doc.sheets[0].rows[4][2]
+  student[:maxMemory] = 0
+
+  puts "\nLoading #{student[:fileName]}..."
+
+  # memory0 읽음
+  sheet = doc.sheets[1]
+  student[:init] = makeProb(sheet.rows[2], 1)
+
+  # memory1~4 읽음
+  (1..4).each do |i|
+    sheet = isValidSheet(doc.sheets, i)
+    if sheet
+      puts "sheet #{i}: match!"
+      makeStrategy(sheet, i, 2..(2**(i*2)+1), i*2, student)
+      # makeStrategy(doc.sheets[2], 2..5, 2, student)
+      # makeStrategy(doc.sheets[3], 2..17, 4, student)
+      # makeStrategy(doc.sheets[4], 2..65, 6, student)
+      # makeStrategy(doc.sheets[5], 2..257, 8, student)
+    else
+      puts "sheet #{i}: invalid sheet name"
+    end
   end
+
+  puts "maxMemory: #{student[:maxMemory]}"
+  allStudents.push student
 end
 
+# p allStudents
+puts "\nTotal #{allStudents.length} files are completed."
 # puts student.to_json
