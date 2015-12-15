@@ -1,6 +1,6 @@
 var players = [];
 
-// Ajax
+// students 정보 받음
 var xhr = new XMLHttpRequest();
 xhr.open('POST', './data.php');
 xhr.setRequestHeader("Content-Type", "application/json");
@@ -21,18 +21,17 @@ xhr.onload = function () {
       }
     }
   }
+
   console.info("gameResults", gameResults);
   console.info("players", players);
+
+  // 게임 결과 보냄
+  var xhr2 = new XMLHttpRequest();
+  xhr2.open('POST', './result.php');
+  xhr2.setRequestHeader("Content-Type", "application/json");
+
+  xhr2.onreadystatechange = function () {
+  };
+  var data = { gameResults: gameResults, players: players };
+  xhr2.send(JSON.stringify(data));
 };
-
-var xhr2 = new XMLHttpRequest();
-xhr2.open('POST', './data.php');
-xhr2.setRequestHeader("Content-Type", "application/json");
-xhr2.send();
-
-xhr2.onload = function () {
-  // var students = JSON.parse(xhr2.responseText);
-};
-
-console.info("gameResults", gameResults);
-console.info("players", players);
