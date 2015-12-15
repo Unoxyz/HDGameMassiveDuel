@@ -55,7 +55,7 @@ def makeStrategy(sheet, memoryNum, rowRange, dhLength, student)
       key = row[0..dhLength-1].join.downcase
     end
     value = makeProb(row, dhLength)
-    student[:"#{key}"] = value
+    student[:memories][:"#{key}"] = value
   end
 
   student[:maxMemory] = [student[:maxMemory], memoryNum].max
@@ -69,12 +69,13 @@ xlsxFiles.each do |file|
   student[:studentId] = doc.sheets[0].rows[3][2]
   student[:name] = doc.sheets[0].rows[4][2]
   student[:maxMemory] = 0
+  student[:memories] = {}
 
   puts "\nLoading #{student[:fileName]}..."
 
   # memory0 읽음
   sheet = doc.sheets[1]
-  student[:init] = makeProb(sheet.rows[2], 1)
+  student[:memories][:init] = makeProb(sheet.rows[2], 1)
 
   # memory1~4 읽음
   (1..4).each do |i|
@@ -95,6 +96,8 @@ xlsxFiles.each do |file|
   allStudents.push student
 end
 
-# p allStudents
 puts "\nTotal #{allStudents.length} files are completed."
-# puts student.to_json
+p allStudents
+jsonFile = File.open("data/students.json", "w")
+jsonFile.write allStudents.to_json
+jsonFile.close
