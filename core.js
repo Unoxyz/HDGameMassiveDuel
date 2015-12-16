@@ -3,18 +3,21 @@ var gameResults = [];
 
 // Player 객체 정의
 function Player(studentId, name, maxMemory, memories, fileName) {
+  // 기본 정보
   this.name = name;
   this.studentId = studentId;
   this.maxMemory = maxMemory;
   this.memories = memories;
+  this.fileName = fileName;
+  // round용 정보
   this.lastStrategy = "";
   this.scores = [];
   this.duelHistory = []; // [주의] 최근 것이 앞에 옴. 말하자면 내림차순.
+  // game 결과
   this.gameNumbers = [];
   this.gameScore = [];
   this.gameHistory = [];
   this.games = 0;
-  this.fileName = fileName;
 }
 Player.prototype = {
   constructor: Player,

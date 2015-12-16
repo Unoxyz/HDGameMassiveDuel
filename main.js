@@ -1,3 +1,5 @@
+document.querySelector('#startgame').onclick = function () {
+  
 var players = [];
 
 // students 정보 받음
@@ -34,4 +36,6 @@ xhr.onload = function () {
   };
   var data = { gameResults: gameResults, players: players };
   xhr2.send(JSON.stringify(data));
+};
+
 };

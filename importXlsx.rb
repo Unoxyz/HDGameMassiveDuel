@@ -74,8 +74,13 @@ xlsxFiles.each do |file|
   puts "\nLoading #{student[:fileName]}..."
 
   # memory0 읽음
-  sheet = doc.sheets[1]
-  student[:memories][:init] = makeProb(sheet.rows[2], 1)
+  sheet = isValidSheet(doc.sheets, 0)
+  if sheet
+    puts "sheet #{i}: match!"
+    student[:memories][:init] = makeProb(sheet.rows[2], 1)
+  else
+    puts "sheet #{i}: invalid sheet name"
+  end
 
   # memory1~4 읽음
   (1..4).each do |i|
