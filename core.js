@@ -27,7 +27,7 @@ Player.prototype = {
     var recentHistory = "";
 
     if (num === 0) {
-      strategy = memories["init"];
+      strategy = memories["init"] ? memories["init"] : ['d', 0.5];
     } else if (num <= 10) {
       for (var i = 0; i < num; i++) {
         recentHistory += history[i]; // 최근 히스토리 생성
