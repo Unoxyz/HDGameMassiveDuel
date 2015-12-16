@@ -1,5 +1,5 @@
 document.querySelector('#startgame').onclick = function () {
-  
+
 var players = [];
 
 // students 정보 받음
@@ -19,7 +19,9 @@ xhr.onload = function () {
     for (var j in students) {
       if (j > i) {
         playGame(players[i], players[j]);
-        console.log("Game " + totalGames + ": " + i + "-" + j, players[i], players[j]);
+        // log를 화면에 표시
+        document.body.innerHTML = "<br/>Game " + totalGames + ": " + i + "-" + j;
+        // document.body.insertAdjacentHTML("beforeend", "<br/>Game " + totalGames + ": " + i + "-" + j, players[i], players[j]);
       }
     }
   }

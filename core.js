@@ -51,7 +51,7 @@ Player.prototype = {
     this.lastStrategy = memory.recentHistory;
     var strategy = memory.strategy;
     var char = strategy[0];
-    var probability = strategy[1] || 1;
+    var probability = strategy[1] == 0 ? 0 : (Number(strategy[1]) || 1);
 
     if (randonNumber > probability) {
       switch (char) {
@@ -79,7 +79,7 @@ function unusableMemory(memory) {
 function duel(user1, user2, round) {
   var result = user1.makeDecision(round) + user2.makeDecision(round);
   user1.duelHistory.unshift(result); // 최근 결과가 앞에 옴.
-  user2.duelHistory.unshift(result);
+  user2.duelHistory.unshift(result[1]+result[0]);
 
   user1.scores[round - 1] = calScore(result)[0];
   user2.scores[round - 1] = calScore(result)[1];
@@ -107,10 +107,8 @@ function calScore(result) {
 
 // 라운드 로그 출력
 function putDuelLogs(user, round) {
-  document.write("Round " + round + " " + user.name + ": ");
-  document.write(user.duelHistory[0] + " ");
-  document.write(user.scores[round-1] + " ");
-  document.write(user.lastStrategy + "<br />");
+  // document.body.insertAdjacentHTML("beforeend",
+  //   "<br/>Round " + round + " " + user.name + ": " + user.duelHistory[0] + " " + user.scores[round-1] + " " + user.lastStrategy);
 }
 
 // 두 명이 한 게임을 함. duel * 10.
@@ -163,9 +161,7 @@ function playGame(user1, user2) {
   })());
 
   // log 출력
-  document.write("user1: " + user1.scores + " " + tempReverse(user1.duelHistory) + "<br />");
-  document.write("user2: " + user2.scores + " " + tempReverse(user2.duelHistory) + "<br />");
-  // console.log("Game result", gameResult);
+  // document.body.insertAdjacentHTML("beforeend", "<br/>user1: " + user1.scores + " " + tempReverse(user1.duelHistory) + "<br />" + "user2: " + user2.scores + " " + tempReverse(user2.duelHistory) + "<br />");
 }
 
 // 배열을 임시로 reverse. array, 객체 다룰 때는 조심. clone이 필요한 거였다.

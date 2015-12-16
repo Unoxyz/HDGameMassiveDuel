@@ -19,6 +19,7 @@ end
 def makeProb(row, index)
   myArray = []
   return nil if row[index].nil?
+  row[index+1] = 1 if row[index+1].nil?
   myArray.push(row[index].downcase, row[index+1].to_f)
   if ['d','h'].include?(myArray[0])
     if myArray[1] < 0
@@ -102,7 +103,6 @@ xlsxFiles.each do |file|
 end
 
 puts "\nTotal #{allStudents.length} files are completed."
-p allStudents
 jsonFile = File.open("data/students.json", "w")
 jsonFile.write allStudents.to_json
 jsonFile.close
