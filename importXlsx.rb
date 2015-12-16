@@ -76,10 +76,10 @@ xlsxFiles.each do |file|
   # memory0 읽음
   sheet = isValidSheet(doc.sheets, 0)
   if sheet
-    puts "sheet #{i}: match!"
+    puts "sheet 0: match!"
     student[:memories][:init] = makeProb(sheet.rows[2], 1)
   else
-    puts "sheet #{i}: invalid sheet name"
+    puts "sheet 0: invalid sheet name"
   end
 
   # memory1~4 읽음
