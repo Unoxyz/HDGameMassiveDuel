@@ -1,5 +1,3 @@
-var students = new Object();
-
 // JSON & Ajax
 var students = {};
 // (function () {

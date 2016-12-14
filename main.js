@@ -1,43 +1,43 @@
 document.querySelector('#startgame').onclick = function () {
 
-var players = [];
+  var players = [];
 
-// students 정보 받음
-var xhr = new XMLHttpRequest();
-xhr.open('POST', './data.php');
-xhr.setRequestHeader("Content-Type", "application/json");
-xhr.send();
+  // students 정보 받음
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', './data.php');
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.send();
 
-xhr.onload = function () {
-  // document.write(xhr.responseText);
-  var students = JSON.parse(xhr.responseText);
-  for (var i in students) {
-    players[i] = new Player(students[i].studentId, students[i].name, students[i].maxMemory, students[i].memories, students[i].fileName);
-  }
+  xhr.onload = function () {
+    var students = JSON.parse(xhr.responseText);
+    for (var e in students) {
+      players[e] = new Player(students[e].studentId, students[e].name, students[e].maxMemory, students[e].memories, students[e].fileName);
+    }
 
-  for (var i in students) {
-    for (var j in students) {
-      if (j > i) {
-        playGame(players[i], players[j]);
-        // log를 화면에 표시
-        document.body.innerHTML = "<br/>Game " + totalGames + ": " + i + "-" + j;
-        // document.body.insertAdjacentHTML("beforeend", "<br/>Game " + totalGames + ": " + i + "-" + j, players[i], players[j]);
+    for (var i in students) {
+      for (var j in students) {
+        if (j > i) {
+          playGame(players[i], players[j]);
+          // log를 화면에 표시
+          document.body.innerHTML = "<br/>Game " + totalGames + ": " + i + "-" + j;
+        }
       }
     }
-  }
 
-  console.info("gameResults", gameResults);
-  console.info("players", players);
+    console.info("gameResults", gameResults);
+    console.info("players", players);
 
-  // 게임 결과 보냄
-  var xhr2 = new XMLHttpRequest();
-  xhr2.open('POST', './result.php');
-  xhr2.setRequestHeader("Content-Type", "application/json");
+    // 게임 결과 보냄
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open('POST', './result.php');
+    xhr2.setRequestHeader("Content-Type", "application/json");
 
-  xhr2.onreadystatechange = function () {
+    xhr2.onreadystatechange = function () {};
+    var data = {
+      gameResults: gameResults,
+      players: players
+    };
+    xhr2.send(JSON.stringify(data));
   };
-  var data = { gameResults: gameResults, players: players };
-  xhr2.send(JSON.stringify(data));
-};
 
 };

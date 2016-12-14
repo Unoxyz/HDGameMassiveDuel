@@ -33,14 +33,17 @@ Player.prototype = {
         recentHistory += history[i]; // 최근 히스토리 생성
       }
       strategy = memories[recentHistory]; // recentHistory에 해당하는 메모리 가져옴.
-      if (unusableMemory(strategy)) {  //
+      if (unusableMemory(strategy)) { //
         recentHistory = arguments.callee(num - 1, memories, history).recentHistory;
         strategy = arguments.callee(num - 1, memories, history).strategy;
       }
     } else {
       console.warn("error: round value");
     }
-    return {recentHistory: recentHistory, strategy: strategy};
+    return {
+      recentHistory: recentHistory,
+      strategy: strategy
+    };
   },
 
   // 전략을 가지고 d, h 중 무엇을 낼지 결정
@@ -72,14 +75,14 @@ Player.prototype = {
 
 // 못쓰는 값이면 true 반환
 function unusableMemory(memory) {
-  return !memory || ( memory[0] !== 'h' && memory[0] !== 'd');
+  return !memory || (memory[0] !== 'h' && memory[0] !== 'd');
 }
 
 // 두 명이 한 라운드 대결을 함. 결과를 history에 저장하고, 점수를 계산하여 저장. 10라운드인지 판단
 function duel(user1, user2, round) {
   var result = user1.makeDecision(round) + user2.makeDecision(round);
   user1.duelHistory.unshift(result); // 최근 결과가 앞에 옴.
-  user2.duelHistory.unshift(result[1]+result[0]);
+  user2.duelHistory.unshift(result[1] + result[0]);
 
   user1.scores[round - 1] = calScore(result)[0];
   user2.scores[round - 1] = calScore(result)[1];
@@ -126,15 +129,21 @@ function playGame(user1, user2) {
     duel(user1, user2, i);
   }
 
-  totalGames ++;
+  totalGames++;
 
   // 각 게임 결과 저장
   var gameResult = {
     gameNumber: totalGames,
-    players: [{id: user1.studentId, name: user1.name}, {id: user2.studentId, name: user2.name}],
+    players: [{
+      id: user1.studentId,
+      name: user1.name
+    }, {
+      id: user2.studentId,
+      name: user2.name
+    }],
     gameHistory: tempReverse(user1.duelHistory),
     scores: (function () {
-      var sumScores = [0,0];
+      var sumScores = [0, 0];
       for (var i = 0; i < 10; i++) {
         sumScores[0] += user1.scores[i];
         sumScores[1] += user2.scores[i];
@@ -145,11 +154,11 @@ function playGame(user1, user2) {
   gameResults.push(gameResult);
 
   // 게임 결과를 각 user에 저장
-  user1.games ++;
+  user1.games++;
   user1.gameScore.push(gameResult.scores[0]);
   user1.gameNumbers.push(totalGames);
   user1.gameHistory.push(tempReverse(user1.duelHistory).join(" "));
-  user2.games ++;
+  user2.games++;
   user2.gameScore.push(gameResult.scores[1]);
   user2.gameNumbers.push(totalGames);
   user2.gameHistory.push((function () {
