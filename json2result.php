@@ -1,5 +1,5 @@
 <?php
-$file = file_get_contents("player_result.json");
+$file = file_get_contents("data/player_result.json");
 $data = json_decode($file,true);
 foreach($data as $row){
 	$id=$row['studentId'];
