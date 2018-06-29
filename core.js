@@ -84,8 +84,29 @@ function duel(user1, user2, round) {
   user1.duelHistory.unshift(result); // 최근 결과가 앞에 옴.
   user2.duelHistory.unshift(result[1] + result[0]);
 
-  user1.scores[round - 1] = calScore(result)[0];
-  user2.scores[round - 1] = calScore(result)[1];
+//////////// modified for cumulative game
+
+  if (round == 1){
+	  user1.scores[round - 1] = 0
+	  user2.scores[round - 1] = 0
+  } else {
+	  user1.scores[round - 1] = user1.scores[round - 2]
+	  user2.scores[round - 1] = user2.scores[round - 2]	
+  }
+
+  user1.scores[round - 1] += 100
+  user2.scores[round - 1] += 100
+
+  user1.scores[round - 1] *= calScore(result)[0];
+  user2.scores[round - 1] *= calScore(result)[1];
+  
+
+  user1.scores[round - 1] = Math.round(user1.scores[round - 1])
+  user2.scores[round - 1] = Math.round(user2.scores[round - 1])
+
+
+
+///////////// modified for cumulative game
 
   putDuelLogs(user1, round);
   putDuelLogs(user2, round);
@@ -96,11 +117,11 @@ function duel(user1, user2, round) {
 function calScore(result) {
   switch (result) {
     case "dd":
-      return [105, 105];
+      return [1.05, 1.05];
     case "dh":
-      return [105, 130];
+      return [1.05, 1.30];
     case "hd":
-      return [130, 105];
+      return [1.30, 1.05];
     case "hh":
       return [0, 0];
     default:
@@ -144,10 +165,12 @@ function playGame(user1, user2) {
     gameHistory: tempReverse(user1.duelHistory),
     scores: (function () {
       var sumScores = [0, 0];
-      for (var i = 0; i < 10; i++) {
-        sumScores[0] += user1.scores[i];
-        sumScores[1] += user2.scores[i];
-      }
+	  sumScores[0] = user1.scores[9];
+	  sumScores[1] = user2.scores[9];
+      // for (var i = 0; i < 10; i++) {
+//         sumScores[0] += user1.scores[i];
+//         sumScores[1] += user2.scores[i];
+//       }
       return sumScores;
     })()
   };
