@@ -11,6 +11,8 @@ bundle 실행하여 필요한 gem 설치
 - 경로: 양식에 맞는 엑셀 파일이 있는 경로를 지정해야 함(/로 끝나야 함). 해당 경로 내의 *.xlsx 파일을 읽음
 `ruby importXlsx.rb DIRECTORY`
 
+- 제대로 되었다면 students.json에 null이 전혀 없어야 함 --> 해당 xlsx에 오류를 체크할 것
+
 ## game.html
 - 브라우저에서 game.html을 연다. button을 누르면 game을 실행한 후 결과를 저장한다. 
 - 게임의 필요한 파일은 위의 `data/students.json`이다. 

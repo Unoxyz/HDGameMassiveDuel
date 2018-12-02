@@ -21,7 +21,7 @@ def makeProb(row, index)
   return nil if row[index].nil?
   row[index+1] = 1 if row[index+1].nil?
   myArray.push(row[index].downcase, row[index+1].to_f)
-  if ['d','h'].include?(myArray[0])
+  if ['c','d'].include?(myArray[0])
     if myArray[1] < 0
       myArray[1] = 0
     elsif myArray[1] > 1
@@ -39,7 +39,7 @@ def makeStrategy(sheet, memoryNum, rowRange, dhLength, student)
   # 한 시트 내 전략이 몇개인지 셈
   count = 0
   sheet.rows[rowRange].each do |e|
-    if (not e[dhLength].nil?) and ['d','h'].include?(e[dhLength].downcase)
+    if (not e[dhLength].nil?) and ['c','d'].include?(e[dhLength].downcase)
       count += 1
     end
   end
